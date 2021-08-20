@@ -34,7 +34,7 @@
   * 다양한 수용영역의 정보를 학습 데이터로 이용하기 위해 ASPP 블록을 이용
 
 * Channel Attention Based U-net with WRCAB(Wide Receptive Field Channel Attention Block)
-<p align="center"><img src="https://user-images.githubusercontent.com/59470033/130187459-4a462023-3d98-453f-9186-c0e7f3ebbfa7.png" width="70%" height="70%"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/59470033/130187459-4a462023-3d98-453f-9186-c0e7f3ebbfa7.png" width="50%" height="50%"></p>
   * 가중되는 채널에서 각 피쳐들의 집중도를 높이기 위해 CAB 기반의 U-net을 구성
   * 다양한 수용 영역의 정보를 학습하기 위해 가장 피쳐의 수가 많은 U-net의 플랫한 부분에 WRCAB를 추가 구성
 
