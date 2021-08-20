@@ -40,6 +40,9 @@
    * 다양한 수용 영역의 정보를 학습하기 위해 가장 피쳐의 수가 많은 U-net의 플랫한 부분에 WRCAB를 추가 구성
 <p align="center"><img src="https://user-images.githubusercontent.com/59470033/130187459-4a462023-3d98-453f-9186-c0e7f3ebbfa7.png" width="50%" height="50%"></p>
 
-
+## 실험 결과
+* 목욕탕집 남자들(1995년) 작품에 대한 화질 개선 결과
+  * 선반의 철재부분이 잘 보존되며 잡음 제거, 선반의 손잡이 모아레 현상, 컬러블리딩 현상과 같은 색이 튀는 현상 제거하며 복원
+<p align="center"><img src="https://user-images.githubusercontent.com/59470033/130187906-47b6bb24-0f0c-48bb-b6f3-2f7b54e79c9e.png" width="50%" height="50%"></p>
 
 
