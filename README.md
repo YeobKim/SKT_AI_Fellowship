@@ -26,7 +26,7 @@
   * Multi-progressive Image Restoration(MPRNet)의 Multi-stage, CSFF, SAM을 이용하여 네트워크를 구성
   * CSFF(Cross-Stage Feature Fusion)는 현재 스테이지의 피쳐들을 다음 스테이지로 전달하는 역할, U-net 구조에서 인코더와 디코더 각각의 결과를 다음 스테이지 인코더로 전달
   * SAM(Supervised Attention Module)은 Ground-Truth 이미지와 로스 비교를 통해 Attention Map을 생성하고 유용한 피쳐를 다음 스테이지로 전달
-  * 맨 마지막 단에 Up-scale(scale factor=2)를 구성하여 Super-Resolution을 통해 해상도를 높여 더욱 고품질의 영상을 얻고자 
+  * 맨 마지막 단에 Up-scale(scale factor=2)를 구성하여 Super-Resolution을 통해 해상도를 높여 더욱 고품질의 영상을 얻고자 함
 
 * Feature Extractor
   *  엣지 모듈과 ASPP 블록으로 구성되어 있음
