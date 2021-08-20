@@ -45,8 +45,9 @@
   * 선반의 철재부분이 잘 보존되며 잡음 제거, 선반의 손잡이 모아레 현상, 컬러블리딩 현상과 같은 색이 튀는 현상 제거하며 복원
 ![result1](https://user-images.githubusercontent.com/59470033/130188088-0f51fe69-6321-4c21-b8a3-018149551357.png)
 
-  * 잡음이 제거된 눈 부분이 뚜렷해지며 셔츼에 나타나는 색이 튀는 현상을 제거하며 복원
+  * 잡음이 제거된 눈 부분이 뚜렷해지며 셔츠에 나타나는 색이 튀는 현상을 제거하며 복원
 ![result2](https://user-images.githubusercontent.com/59470033/130188200-c9207a1c-0edf-489a-a305-8c0a48916da3.png)
 
-
+  * 뒷쪽 장식이 잡음이 제거되며 객체가 뚜렷하게 복원, 엄지손가락 주변의 색이 튀는 현상을 개선하고 객체를 선명하게 복원
+![result3](https://user-images.githubusercontent.com/59470033/130188411-94ec8ddc-1828-49ae-8fdc-a6a340811760.png)
 
