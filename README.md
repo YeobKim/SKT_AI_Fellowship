@@ -19,7 +19,10 @@
 * 데이터셋 제작
   * 직접 제작한 MPEG2 알고리즘을 기반으로 압축과정을 거침 
   * Color bleeding을 더 자세히 구성하기 위하여 압축 과정의 DCT부분을 커스터마이징
-  * 
+
 ## 제안하는 딥 러닝 모델
-- 네트워크 구조
+* 네트워크 구조
 ![network_overall](https://user-images.githubusercontent.com/59470033/130185260-91185cab-fe4f-4cd7-932e-e5f3a8beb74a.png)
+  * Multi-progressive Image Restoration(MPRNet)의 Multi-stage, CSFF, SAM을 이용하여 네트워크를 구성
+  * CSFF(Cross-Stage Feature Fusion)는 현재 스테이지의 피쳐들을 다음 스테이지로 전달하는 역할, U-net 구조에서 인코더와 디코더 각각의 결과를 다음 스테이지 인코더로 전달
+  * SAM(Supervised Attention Module)은 Ground-Truth 이미지와 로스 비교를 통해 Attention Map을 생성하고 유용한 피쳐를 다음 스테이지로 
