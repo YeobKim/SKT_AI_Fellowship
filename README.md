@@ -7,17 +7,17 @@
 ## 프로젝트 소개
 * 연구 내용
   * 오래된 영상물의 화질 개선을 위한 딥러닝 네트워크 모델 분석, 연구, 개발 등
-  * Old Image 화질 복원 with AI Tech.
+  * Old Image 화질 복원 with AI Tech
 * 개발 배경
-  * 화질 수준이 매우 열악한 디지털 영상 자료들이 많이 보관되어 있음.
-  * 이러한 자료들을 복원하는 것은 사회적/경제적 가치 측면에서 매우 의미 있는 일임.
+  * 화질 수준이 매우 열악한 디지털 영상 자료들이 많이 보관되어 있음
+  * 이러한 자료들을 복원하는 것은 사회적/경제적 가치 측면에서 매우 의미 있는 일임
 
 ## 데이터셋 구성
 * 데이터셋 분석
   * 90-00년대 드라마, 영화에는 Blocking, Ringing, Color bleeding 아티팩트들이 존재하는 것으로 확인 
   * 위의 아티팩트들은 압축 과정에서 얻어지는 현상
 * 데이터셋 제작
-  * 직접 제작한 MPEG2 알고리즘을 기반으로 압축과정을 거침 
+  * 직접 제작한 MPEG2 알고리즘을 기반으로 압축과정을 거침
   * Color bleeding을 더 자세히 구성하기 위하여 압축 과정의 DCT부분을 커스터마이징
 
 ## 제안하는 딥 러닝 모델
@@ -29,6 +29,11 @@
 * Feature Extractor
 ![feature_extractor](https://user-images.githubusercontent.com/59470033/130186086-fc00bfe6-f241-4f3f-ac9a-340548f0889f.png)
   * 엣지 모듈과 ASPP 블록으로 구성되어 있음.
-  * 열화된 이미지에서부터 열화현상이 제거된 엣지를 추출하기 위해 Ground-Truth Edge와 로스 비교를 통해 학습된 엣지를 추출할 수 있도록 엣지 모듈을 설계 -> 열화 현상 제거 시 디테일이 뭉개지거나 다수 잃게 되는 현상을 
+  * 열화된 이미지에서부터 열화현상이 제거된 엣지를 추출하기 위해 Ground-Truth Edge와 로스 비교를 통해 학습된 엣지를 추출할 수 있도록 엣지 모듈을 설계 -> 열화 현상 제거 시 디테일이 뭉개지거나 다수 잃게 되는 현상을 개선
   * 다양한 수용영역의 정보를 학습 데이터로 이용하기 위해 ASPP 블록을 이용
+* Channel Attention Based U-net with WRCAB(Wide Receptive Field Channel Attention Block)
+![unet](https://user-images.githubusercontent.com/59470033/130186517-8e70adc3-0e3d-42a0-94c5-facc92773459.png)
+  * 가중되는 채널에서 각 피쳐들의 집중도를 높이기 위해 CAB 기반의 U-net을 구성
+  * 다양한 수용 영역의 정보를 학습하기 위해 가장 피쳐의 수가 많은 U-net의 플랫한 부분에 WRCAB를 추가 구성
+
 
