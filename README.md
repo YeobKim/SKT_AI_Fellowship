@@ -27,7 +27,6 @@
   * CSFF(Cross-Stage Feature Fusion)는 현재 스테이지의 피쳐들을 다음 스테이지로 전달하는 역할, U-net 구조에서 인코더와 디코더 각각의 결과를 다음 스테이지 인코더로 전달
   * SAM(Supervised Attention Module)은 Ground-Truth 이미지와 로스 비교를 통해 Attention Map을 생성하고 유용한 피쳐를 다음 스테이지로 전달
 * Feature Extractor
-![feature_extractor](https://user-images.githubusercontent.com/59470033/130186086-fc00bfe6-f241-4f3f-ac9a-340548f0889f.png){: width="300" height="300"){: .center}
 <center><img src="https://user-images.githubusercontent.com/59470033/130186086-fc00bfe6-f241-4f3f-ac9a-340548f0889f.png" width="50%" height="50%"></center>
   * 엣지 모듈과 ASPP 블록으로 구성되어 있음.
   * 열화된 이미지에서부터 열화현상이 제거된 엣지를 추출하기 위해 Ground-Truth Edge와 로스 비교를 통해 학습된 엣지를 추출할 수 있도록 엣지 모듈을 설계 -> 열화 현상 제거 시 디테일이 뭉개지거나 다수 잃게 되는 현상을 개선
