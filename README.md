@@ -43,6 +43,8 @@
 ## 실험 결과
 * 목욕탕집 남자들(1995년) 작품에 대한 화질 개선 결과
   * 선반의 철재부분이 잘 보존되며 잡음 제거, 선반의 손잡이 모아레 현상, 컬러블리딩 현상과 같은 색이 튀는 현상 제거하며 복원
+![result1](https://user-images.githubusercontent.com/59470033/130188088-0f51fe69-6321-4c21-b8a3-018149551357.png)
+
 <p align="center"><img src="https://user-images.githubusercontent.com/59470033/130187906-47b6bb24-0f0c-48bb-b6f3-2f7b54e79c9e.png" width="50%" height="50%"></p>
 
 
