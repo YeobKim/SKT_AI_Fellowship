@@ -51,3 +51,5 @@
   * 뒷쪽 장식이 잡음이 제거되며 객체가 뚜렷하게 복원, 엄지손가락 주변의 색이 튀는 현상을 개선하고 객체를 선명하게 복원
 ![result3](https://user-images.githubusercontent.com/59470033/130188411-94ec8ddc-1828-49ae-8fdc-a6a340811760.png)
 
+## 결과
+SKT AI Fellowship 3기 대상 수상
