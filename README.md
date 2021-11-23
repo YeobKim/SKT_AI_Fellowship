@@ -47,13 +47,11 @@
 
 ## 실험 결과
 * 목욕탕집 남자들(1995년) 작품에 대한 화질 개선 결과
-  * 선반의 철재부분이 잘 보존되며 잡음 제거, 선반의 손잡이 모아레 현상, 컬러블리딩 현상과 같은 색이 튀는 현상 제거하며 복원
-![result1](https://user-images.githubusercontent.com/59470033/130188088-0f51fe69-6321-4c21-b8a3-018149551357.png)
+  * 잡음 및 링잉현상, 반찬에 컬러가 튀는 컬러블리딩 및 무아레 현상을 제거하며 복원
+![그림4](https://user-images.githubusercontent.com/59470033/143055789-65da7ae2-1dca-4e8b-b930-03e5ef4b03e1.png)
 
-  * 잡음이 제거된 눈 부분이 뚜렷해지며 셔츠에 나타나는 색이 튀는 현상을 제거하며 복원
-![result2](https://user-images.githubusercontent.com/59470033/130188200-c9207a1c-0edf-489a-a305-8c0a48916da3.png)
-
-  * 뒷쪽 장식이 잡음이 제거되며 객체가 뚜렷하게 복원, 엄지손가락 주변의 색이 튀는 현상을 개선하고 객체를 선명하게 복원
-![result3](https://user-images.githubusercontent.com/59470033/130188411-94ec8ddc-1828-49ae-8fdc-a6a340811760.png)
+* 딸부잣집(1994년) 작품에 대한 화질 개선 결과
+  * 손 부분에 잡음 및 컬러가 튀는 현상 제거, 머리부분에 링잉현상을 우수하게 제거하며 복원
+![그림3](https://user-images.githubusercontent.com/59470033/143055966-774f798a-3a79-4de4-8a5a-95504ac27a9f.png)
 
 
