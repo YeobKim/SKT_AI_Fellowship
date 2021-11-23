@@ -20,7 +20,10 @@
   * 위의 아티팩트들은 압축 과정에서 얻어지는 현상
 * 데이터셋 제작
   * 직접 제작한 MPEG2 알고리즘을 기반으로 압축과정을 거침
-  * Color bleeding을 더 자세히 구성하기 위하여 압축 과정의 DCT부분을 커스터마이징
+  * Color bleeding을 더 자세히 구성하기 위하여 압축 과정의 DCT부분을 커스터마이징(SKT 슈퍼노바팀과 특허 출원)
+  * Ringing Artifact를 더 넓은 범위로 구현하기 위해 DCT 후 LPF를 사용하여 구성
+  * 90년대 영상 내 필름 노이즈와 같은 세로줄 현상을 없애기 위해 세로줄 잡음 생성 후 영상에 추가
+  * AWGN 노이즈 레벨 20~30 사이로 랜덤하게 생성하여 잡음 추가
 
 ## 제안하는 딥 러닝 모델
 * 네트워크 구조
@@ -40,7 +43,7 @@
 * Channel Attention Based U-net with DC-CAB(Deformable Convolution-Channel Attention Block)  
    * 가중되는 채널에서 각 피쳐들의 집중도를 높이기 위해 CAB 기반의 U-net을 구성
    * 객체의 위치, 중요한 객체를 판단하여 가중치를 주는 Deformable Convolution을 이용한 후 가중되는 채널의 집중도를 위한 CAB 결합
-<p align="center"><img src="https://user-images.githubusercontent.com/59470033/143054316-deef9c7e-f9e2-4c5f-99b0-f711c9f838fc.png" width="50%" height="50%"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/59470033/143054316-deef9c7e-f9e2-4c5f-99b0-f711c9f838fc.png" width="70%" height="70%"></p>
 
 ## 실험 결과
 * 목욕탕집 남자들(1995년) 작품에 대한 화질 개선 결과
