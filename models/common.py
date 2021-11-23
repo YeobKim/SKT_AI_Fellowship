@@ -294,3 +294,106 @@ class sksak_feat(nn.Module):
         out = self.ch4feat(torch.cat([x, edge, x+edge, dout], 1))
 
         return out
+
+class video_feat(nn.Module):
+    def __init__(self, channels, features):
+        super(video_feat, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=2, dilation=2)
+        self.conv4 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=4, dilation=4)
+        self.conv8 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=8, dilation=8)
+
+        platlayer = []
+        platlayer.append(nn.PReLU())
+        platlayer.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1))
+        self.platlayer = nn.Sequential(*platlayer)
+
+        self.prelu = nn.PReLU()
+        self.feat2feat = nn.Conv2d(in_channels=features * 4, out_channels=features, kernel_size=1, padding=0)
+        self.feat2ch = nn.Conv2d(in_channels=features, out_channels=channels, kernel_size=1, padding=0)
+        self.ch4feat = nn.Conv2d(in_channels=channels * 4, out_channels=features, kernel_size=1, padding=0)
+
+    def forward(self, x, edge):
+        d1 = self.conv1(x)
+        d2 = self.conv2(x)
+        d4 = self.conv4(x)
+        d8 = self.conv8(x)
+        dcat = self.feat2feat(torch.cat([d1, d2, d4, d8], 1))
+
+        dout = self.feat2ch(self.platlayer(dcat))
+
+        out = self.ch4feat(torch.cat([x, dout], 1))
+
+        return out
+
+
+class ResidudalBlock(nn.Module):
+    def __init__(self, features):
+        super(ResidudalBlock, self).__init__()
+
+        block1 = []
+        block1.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1))
+        block1.append(nn.PReLU())
+        block1.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1))
+
+        self.block1 = nn.Sequential(*block1)
+
+    def forward(self, x):
+        residual = x
+
+        out = self.block1(x) + residual
+
+        return out
+
+class sksak_feat2(nn.Module):
+    def __init__(self, channels, features):
+        super(sksak_feat2, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels=channels, out_channels=features//4, kernel_size=3, padding=1)
+
+        self.conv2 = nn.Conv2d(in_channels=channels, out_channels=features//4, kernel_size=3, padding=2, dilation=2)
+
+        self.conv4 = nn.Conv2d(in_channels=channels, out_channels=features//4, kernel_size=3, padding=4, dilation=4)
+
+        self.conv8 = nn.Conv2d(in_channels=channels, out_channels=features//4, kernel_size=3, padding=8, dilation=8)
+
+        platlayer = []
+        platlayer.append(nn.PReLU())
+        platlayer.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1))
+        self.platlayer = nn.Sequential(*platlayer)
+
+        self.prelu = nn.PReLU()
+        self.feat2feat = nn.Conv2d(in_channels=features, out_channels=features, kernel_size=1, padding=0)
+        self.feat2ch = nn.Conv2d(in_channels=features, out_channels=channels, kernel_size=1, padding=0)
+        self.ch4feat = nn.Conv2d(in_channels=channels * 4, out_channels=features, kernel_size=1, padding=0)
+
+    def forward(self, x, edge):
+        d1 = self.conv1(x)
+        d2 = self.conv2(x)
+        d4 = self.conv4(x)
+        d8 = self.conv8(x)
+        dcat = torch.cat([d1, d2, d4, d8], 1)
+
+        dout = self.feat2ch(self.platlayer(dcat))
+
+        out = self.ch4feat(torch.cat([x, edge, x+edge, dout], 1))
+
+        return out
+
+class sksak_edgecomb(nn.Module):
+    def __init__(self, channels, features):
+        super(sksak_edgecomb, self).__init__()
+
+        platlayer = []
+        platlayer.append(nn.PReLU())
+        platlayer.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1))
+        self.platlayer = nn.Sequential(*platlayer)
+
+        self.prelu = nn.PReLU()
+        self.feat2feat = nn.Conv2d(in_channels=features, out_channels=features, kernel_size=1, padding=0)
+        self.feat2ch = nn.Conv2d(in_channels=features, out_channels=channels, kernel_size=1, padding=0)
+        self.ch3feat = nn.Conv2d(in_channels=channels * 3, out_channels=features, kernel_size=1, padding=0)
+
+    def forward(self, x, edge):
+        out = self.ch3feat(torch.cat([x, edge, x+edge], 1))
+
+        return out
