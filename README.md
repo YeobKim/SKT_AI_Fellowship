@@ -4,6 +4,8 @@
 
 이 레퍼지토리는 [SKT AI Fellowship 3기](https://www.sktaifellowship.com) [AI 기반 고 디지털 미디어 복원 기술 개발](https://www.sktaifellowship.com/4222451b-09b3-4627-a013-9732bcdadf57)에 관련된 내용을 업로드합니다.
 
+SKT AI Fellowship 3기 대상을 수상하였습니다.
+
 ## 프로젝트 소개
 * 연구 내용
   * 오래된 영상물의 화질 개선을 위한 딥러닝 네트워크 모델 분석, 연구, 개발 등
@@ -51,5 +53,4 @@
   * 뒷쪽 장식이 잡음이 제거되며 객체가 뚜렷하게 복원, 엄지손가락 주변의 색이 튀는 현상을 개선하고 객체를 선명하게 복원
 ![result3](https://user-images.githubusercontent.com/59470033/130188411-94ec8ddc-1828-49ae-8fdc-a6a340811760.png)
 
-## 결과
-SKT AI Fellowship 3기 대상 수상
+
