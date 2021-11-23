@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from pdb import set_trace as stx
 import models.common as common
+import torchvision.ops.deform_conv as dc
+
 
 ##########################################################################
 def conv(in_channels, out_channels, kernel_size, bias=False, stride=1):
@@ -37,15 +39,16 @@ class CALayer(nn.Module):
 class CAB(nn.Module):
     def __init__(self, n_feat, kernel_size, reduction, bias, act):
         super(CAB, self).__init__()
-        modules_body = []
-        modules_body.append(conv(n_feat, n_feat, kernel_size, bias=bias))
-        modules_body.append(act)
-        modules_body.append(conv(n_feat, n_feat, kernel_size, bias=bias))
+        firstblock = []
+        firstblock.append(nn.Conv2d(in_channels=n_feat, out_channels=n_feat, kernel_size=3, padding=1, bias=False))
+        firstblock.append(nn.PReLU())
+        firstblock.append(nn.Conv2d(in_channels=n_feat, out_channels=n_feat, kernel_size=3, padding=1, bias=False))
+        self.body = nn.Sequential(*firstblock)
 
         self.CA = CALayer(n_feat, reduction, bias=bias)
-        self.body = nn.Sequential(*modules_body)
 
     def forward(self, x):
+
         res = self.body(x)
         res = self.CA(res)
         res += x
@@ -208,71 +211,6 @@ class ORB(nn.Module):
         res += x
         return res
 
-##########################################################################
-## Wide Receptive Channel Attention Block (CAB)
-class WCAB(nn.Module):
-    def __init__(self, features, kernel_size, reduction, bias, act):
-        super(WCAB, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels=features, out_channels=features//2, kernel_size=3, padding=1, bias=False)
-        self.conv2 = nn.Conv2d(in_channels=features, out_channels=features//2, kernel_size=3, padding=2, dilation=2,
-                               bias=False)
-        self.conv3 = nn.Conv2d(in_channels=features, out_channels=features//2, kernel_size=3, padding=3, dilation=3,
-                               bias=False)
-        self.conv4 = nn.Conv2d(in_channels=features, out_channels=features//2, kernel_size=3, padding=4, dilation=4,
-                               bias=False)
-
-        self.prelu = nn.PReLU()
-        self.flatten = nn.Conv2d(in_channels=features * 2, out_channels=features, kernel_size=1, padding=0, bias=False)
-
-        # modules_body = []
-        # modules_body.append(conv(features, features, kernel_size, bias=bias))
-        # modules_body.append(act)
-        # modules_body.append(conv(features, features, kernel_size, bias=bias))
-
-        self.CA = CALayer(features, reduction, bias=bias)
-        # self.body = nn.Sequential(*modules_body)
-
-    def forward(self, x):
-        conv1 = self.conv1(x)
-        conv2 = self.conv2(x)
-        conv3 = self.conv3(x)
-        conv4 = self.conv4(x)
-        convcat = self.flatten(torch.cat([conv1, conv2, conv3, conv4], 1))
-
-        flatdata = self.prelu(convcat)
-
-        res = self.CA(flatdata)
-        res += x
-        return res
-
-##########################################################################
-## Wide Receptive Field Channel Attetnion Group (WCAG)
-class WCAG(nn.Module):
-    def __init__(self, n_feat, kernel_size, reduction, act, bias, scale_unetfeats):
-        super(WCAG, self).__init__()
-        # self.wcab1 = [WCAB(n_feat, kernel_size, reduction, bias=bias, act=act) for _ in range(2)]
-        # self.wcab2 = [WCAB(n_feat+scale_unetfeats, kernel_size, reduction, bias=bias, act=act) for _ in range(2)]
-        # self.wcab3 = [WCAB(n_feat+(scale_unetfeats*2), kernel_size, reduction, bias=bias, act=act) for _ in range(2)]
-
-        self.wcab1 = WCAB(n_feat, kernel_size, reduction, bias=bias, act=act)
-        self.wcab2 = WCAB(n_feat+scale_unetfeats, kernel_size, reduction, bias=bias, act=act)
-        self.wcab3 = WCAB(n_feat+(scale_unetfeats*2), kernel_size, reduction, bias=bias, act=act)
-
-        # self.wcab1 = nn.Sequential(*self.wcab1)
-        # self.wcab2 = nn.Sequential(*self.wcab2)
-        # self.wcab3 = nn.Sequential(*self.wcab3)
-
-        self.up21 = UpSample(n_feat, scale_unetfeats)
-        self.up32 = UpSample(n_feat + scale_unetfeats, scale_unetfeats)
-
-    def forward(self, x):
-        enc1, enc2, enc3 = x
-
-        res3 = self.wcab3(enc3)
-        res2 = self.wcab2(enc2)
-        res1 = self.wcab1(enc1)
-
-        return [res1, res2, res3]
 
 class ChannelPool(nn.Module):
     def forward(self, x):
@@ -322,6 +260,57 @@ class CA_SA(nn.Module): #
         return out
 
 
+class DAB(nn.Module): # Deformed Convolution Attention Block
+    def __init__(self, features, kernel_size, reduction, bias, act):
+        super(DAB, self).__init__()
+        groups = 8
+        kernel_size = 3
+
+        self.prelu = nn.PReLU()
+        self.offset_conv1 = nn.Conv2d(features, 2*kernel_size*kernel_size, kernel_size=3, stride=1, padding=1, bias=True)
+        self.deconv1 = dc.DeformConv2d(features, features, kernel_size=3, stride=1, padding=1, dilation=1,
+                                   groups=groups)
+        self.conv = nn.Conv2d(features, features, kernel_size=3, stride=1, padding=1, bias=False)
+        self.softmax = nn.Softmax(-1)
+
+    def forward(self, x):
+        residual = x
+        # deform conv
+        offset1 = self.prelu(self.offset_conv1(x))
+        feat_deconv1 = self.deconv1(x, offset1)
+
+        # attention
+        atten_conv = self.conv(x)
+        atten_feat = self.softmax(atten_conv)
+
+        out = atten_feat * feat_deconv1
+        out = out + residual
+
+        return out
+
+class DCCA(nn.Module): # Deformed Convolution Attention Block
+    def __init__(self, n_feat, kernel_size, reduction, act, bias, scale_unetfeats):
+        super(DCCA, self).__init__()
+        self.dab1 = DAB(n_feat, kernel_size, reduction, bias=bias, act=act)
+        self.dab2 = DAB(n_feat + scale_unetfeats, kernel_size, reduction, bias=bias, act=act)
+        self.dab3 = DAB(n_feat + (scale_unetfeats * 2), kernel_size, reduction, bias=bias, act=act)
+
+        self.cab1 = CAB(n_feat, kernel_size, reduction, bias=bias, act=act)
+        self.cab2 = CAB(n_feat + scale_unetfeats, kernel_size, reduction, bias=bias, act=act)
+        self.cab3 = CAB(n_feat + (scale_unetfeats * 2), kernel_size, reduction, bias=bias, act=act)
+
+    def forward(self, x):
+        enc1, enc2, enc3 = x
+
+        res3 = self.dab3(enc3)
+        res3 = self.cab3(res3) + enc3
+        res2 = self.dab2(enc2)
+        res2 = self.cab2(res2) + enc2
+        res1 = self.dab1(enc1)
+        res1 = self.cab1(res1) + enc1
+
+        return [res1, res2, res3]
+
 ##########################################################################
 class ORSNet(nn.Module):
     def __init__(self, n_feat, scale_orsnetfeats, kernel_size, reduction, act, bias, scale_unetfeats, num_cab):
@@ -364,19 +353,8 @@ class EdgeMoudule(nn.Module):
     def __init__(self, channels, features):
         super(EdgeMoudule, self).__init__()
 
-        self.conv1 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=1, bias=False)
-        self.conv2 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=2, dilation=2,
-                               bias=False)
-        self.conv3 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=3, dilation=3,
-                               bias=False)
-        self.conv4 = nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=4, dilation=4,
-                               bias=False)
-
-        self.prelu = nn.PReLU()
-        self.flatten = nn.Conv2d(in_channels=features * 4, out_channels=features, kernel_size=1, padding=0, bias=False)
-
         edgeblock = []
-        edgeblock.append(nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1, bias=False))
+        edgeblock.append(nn.Conv2d(in_channels=channels, out_channels=features, kernel_size=3, padding=1, bias=False))
         edgeblock.append(nn.PReLU())
         for _ in range(4):
             edgeblock.append(
@@ -388,35 +366,21 @@ class EdgeMoudule(nn.Module):
 
 
     def forward(self, x):
-        d1 = self.conv1(x)
-        d2 = self.conv2(x)
-        d3 = self.conv3(x)
-        d4 = self.conv4(x)
-
-        convcat = self.prelu(torch.cat([d1, d2, d3, d4], 1))
-        flatdata = self.flatten(convcat)
-
-        edge = self.edgeblock(flatdata)
+        edge = self.edgeblock(x)
 
         return edge
 
 ##########################################################################
 class SKSAK(nn.Module):
-    def __init__(self, channels=3, features=96, scale_unetfeats=48, scale_orsnetfeats=32, num_cab=8, kernel_size=3,
+    def __init__(self, channels=3, features=96, scale_unetfeats=32, scale_orsnetfeats=32, num_cab=8, kernel_size=3,
                  reduction=4, bias=False):
         super(SKSAK, self).__init__()
 
         self.edge_module = EdgeMoudule(channels, features)
 
         act = nn.PReLU()
-        # self.shallow_feat1 = nn.Sequential(conv(channels, features, kernel_size, bias=bias),
-        #                                    CAB(features, kernel_size, reduction, bias=bias, act=act))
-        # self.shallow_feat2 = nn.Sequential(conv(channels, features, kernel_size, bias=bias),
-        #                                    CAB(features, kernel_size, reduction, bias=bias, act=act))
-        # self.shallow_feat3 = nn.Sequential(conv(features, features, kernel_size, bias=bias),
-        #                                    CAB(features, kernel_size, reduction, bias=bias, act=act))
 
-        self.feature_extract = common.sksak_feat(channels, features)
+        self.feature_extract = common.sksak_edgecomb(channels, features)
 
         # Cross Stage Feature Fusion (CSFF)
         self.stage1_encoder = Encoder(features, kernel_size, reduction, act, bias, scale_unetfeats, csff=False)
@@ -429,7 +393,7 @@ class SKSAK(nn.Module):
         self.stage3_encoder = Encoder(features, kernel_size, reduction, act, bias, scale_unetfeats, csff=True)
         self.stage3_decoder = Decoder(features, kernel_size, reduction, act, bias, scale_unetfeats)
 
-        self.unet_plat = WCAG(features, kernel_size, reduction, bias, act, scale_unetfeats)
+        self.unet_plat = DCCA(features, kernel_size, reduction, bias, act, scale_unetfeats)
 
         self.sam12 = SAM(features, kernel_size=1, bias=bias)
         self.sam23 = SAM(features, kernel_size=1, bias=bias)
