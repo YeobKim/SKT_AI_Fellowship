@@ -67,4 +67,4 @@
 ## 자세한 내용
 * 자세한 내용은 아래 블로그를 참고해주세요!
 
-https://athurk94.tistory.com/entry/SKT-AI-Fellowship3-%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EC%99%80-%EB%81%9D-%EB%A7%88%EB%AC%B4%EB%A6%AC
+* https://athurk94.tistory.com/entry/SKT-AI-Fellowship3-%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EC%99%80-%EB%81%9D-%EB%A7%88%EB%AC%B4%EB%A6%AC
